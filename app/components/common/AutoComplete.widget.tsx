@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -137,21 +137,23 @@ const top100Films = [
   { title: "3 Idiots", year: 2009 },
   { title: "Monty Python and the Holy Grail", year: 1975 },
 ];
-const GOOGLE_API_KEY = "AIzaSyCeXw1J0P2kFx4zXoqaR7fuyLgQ7G1-nuA";
+const GOOGLE_API_KEY = "AIzaSyA2LspnTSqxHCtnUKpOr_IAyFoTLrqFk84";
 const REBRANDLY_API_KEY = "3903b2fff9fa474b9aa1fc2a7e7dd0a9";
 const REBRANDLY_WORKSPACE_KEY = "fc0d5e55b7744e15a2e75871b3e14a24";
 const DOMAIN_NAME = "rebrand.ly";
 const AutoCompleteWidget = () => {
   const [placeId, setPlaceId] = useState<string>("");
   const [reviewLink, setReviewLink] = useState<any>("");
+  const [placeData, setPlaceData] = useState([]);
+
   const generateReviewLink = async () => {
     try {
       // Replace 'YOUR_GOOGLE_API_KEY' with your actual Google Maps API key
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${GOOGLE_API_KEY}`
+        `https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyAhpjJ_TZmx-p2QF0SKM3hlW0_zRPMAB18&place_id=ChIJEfYKhTvmc0gR3dLTvOJwkZc`
       );
       const placeDetails = response.data.result;
-      console.log(placeDetails);
+      // console.log(placeDetails);
       // const url = `https://www.google.com/maps/place/?q=place:ChIJEfYKhTvmc0gR3dLTvOJwkZc`;
 
       // // Shorten the URL using the Rebrandly API
@@ -179,6 +181,18 @@ const AutoCompleteWidget = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    async function getList() {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/textsearch/json?query=asd&key=${GOOGLE_API_KEY}`
+      );
+      setPlaceData(response.data);
+    }
+    if (placeId.length !== 0) {
+      getList();
+    }
+  }, [placeId]);
   return (
     <Box
       sx={{
@@ -230,7 +244,7 @@ const AutoCompleteWidget = () => {
         />
         <Button
           variant="contained"
-          onClick={generateReviewLink}
+          // onClick={generateReviewLink}
           sx={{
             color: "#FFF",
             textAlign: "center",
