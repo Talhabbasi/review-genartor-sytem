@@ -54,7 +54,7 @@ const AutoCompleteWidget = () => {
       const response = await axios.get(`${url}`, {
         params: { text: nextValue },
       });
-      setPlaceData(response.data.data.results);
+      setPlaceData(response.data.data.predictions);
       if (selected === false) {
         setOpen(true);
       }
@@ -126,14 +126,11 @@ const AutoCompleteWidget = () => {
                 }}
                 onClick={() => {
                   setSelected(true);
-                  setPlaceName(`${e.name} ${e?.formatted_address}`);
+                  setPlaceName(`${e.description}`);
                   setOpen(false);
                 }}
               >
-                <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-                  {e.name}
-                </span>{" "}
-                <span style={{ fontSize: "14px" }}>{e?.formatted_address}</span>
+                <span style={{ fontSize: "14px" }}>{e.description}</span>{" "}
               </Box>
             ))}
           </Box>

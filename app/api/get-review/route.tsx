@@ -5,7 +5,6 @@ export async function POST(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
   const query = searchParams.get("placeId");
-  console.log(query);
   const url = `https://www.google.com/maps/place/?q=place:${query}`;
 
   // Shorten the URL using the Rebrandly API
