@@ -16,14 +16,15 @@ const AutoCompleteWidget = () => {
   const [reviewLink, setReviewLink] = useState<any>(false);
   const [loading, setLoading] = useState<any>();
   const [placeData, setPlaceData] = useState([]);
-  const [value] = useDebounce(placeName, 500);
+  const [value] = useDebounce(placeName, 100);
+  const [open, setOpen] = useState<any>(false);
 
   const generateReviewLink = async () => {
     setLoading(true);
     if (placeName.length !== 0 && placeData.length !== 0) {
       const id: any = placeData.find(
         (e: any) =>
-          e.name.toLowerCase() === placeName.split(" ")[0].toLowerCase()
+          e.name.toLowerCase() === placeName.split("Location:")[0].toLowerCase()
       );
       const url = `https://review-genartor-sytem.vercel.app/api/get-review`;
       const response = await axios.post(`${url}?placeId=${id?.place_id}`);
@@ -41,16 +42,18 @@ const AutoCompleteWidget = () => {
 
   useEffect(() => {
     if (placeName === "" || value === "") {
-      return;
+      return setOpen(false);
     }
     async function getList(nextValue: any) {
       setPlaceData([]);
+      setOpen(false);
       setLoading(true);
       const url = `https://review-genartor-sytem.vercel.app/api`;
       const response = await axios.get(`${url}`, {
-        params: { text: nextValue.split(" ")[0] },
+        params: { text: nextValue.split("Location:")[0] },
       });
       setPlaceData(response.data.data.results);
+      setOpen(true);
       setLoading(false);
     }
     getList(value);
@@ -95,11 +98,11 @@ const AutoCompleteWidget = () => {
           value={placeName}
           id="google-place-api-id"
           disableClearable
-          options={
-            placeData?.map(
-              (option: any) => `${option?.name} ${option?.formatted_address}`
-            ) ?? []
-          }
+          open={open}
+          options={placeData?.map(
+            (option: any) =>
+              `${option?.name} Location: ${option?.formatted_address}`
+          )}
           renderInput={(params) => (
             <TextField
               {...params}
