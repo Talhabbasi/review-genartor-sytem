@@ -25,7 +25,7 @@ const AutoCompleteWidget = () => {
         (e: any) =>
           e.name.toLowerCase() === placeName.split(" ")[0].toLowerCase()
       );
-      const url = `http://localhost:3000/api/get-review`;
+      const url = `https://review-genartor-sytem.vercel.app/api/get-review`;
       const response = await axios.post(`${url}?placeId=${id?.place_id}`);
       setReviewLink(response.data.data);
       setPlaceName("");
@@ -40,10 +40,13 @@ const AutoCompleteWidget = () => {
   };
 
   useEffect(() => {
+    if (placeName === "" || value === "") {
+      return;
+    }
     async function getList(nextValue: any) {
       setPlaceData([]);
       setLoading(true);
-      const url = `http://localhost:3000/api`;
+      const url = `https://review-genartor-sytem.vercel.app/api`;
       const response = await axios.get(`${url}`, {
         params: { text: nextValue.split(" ")[0] },
       });
@@ -52,7 +55,6 @@ const AutoCompleteWidget = () => {
     }
     getList(value);
   }, [value]);
-  console.log(placeData);
   return (
     <Box
       sx={{
