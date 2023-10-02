@@ -18,13 +18,15 @@ const AutoCompleteWidget = () => {
   const [placeData, setPlaceData] = useState([]);
   const [value] = useDebounce(placeName, 100);
   const [open, setOpen] = useState<any>(false);
+  const [selected, setSelected] = useState(false);
 
   const generateReviewLink = async () => {
     setLoading(true);
     if (placeName.length !== 0 && placeData.length !== 0) {
       const id: any = placeData.find(
         (e: any) =>
-          e.name.toLowerCase() === placeName.split("Location:")[0].toLowerCase()
+          `${e.name.toLowerCase()} ${e.formatted_address.toLowerCase()}` ===
+          placeName.toLowerCase()
       );
       const url = `https://review-genartor-sytem.vercel.app/api/get-review`;
       const response = await axios.post(`${url}?placeId=${id?.place_id}`);
@@ -42,18 +44,20 @@ const AutoCompleteWidget = () => {
 
   useEffect(() => {
     if (placeName === "" || value === "") {
+      setPlaceData([]);
       return setOpen(false);
     }
     async function getList(nextValue: any) {
       setPlaceData([]);
-      setOpen(false);
       setLoading(true);
       const url = `https://review-genartor-sytem.vercel.app/api`;
       const response = await axios.get(`${url}`, {
-        params: { text: nextValue.split("Location:")[0] },
+        params: { text: nextValue },
       });
       setPlaceData(response.data.data.results);
-      setOpen(true);
+      if (selected === false) {
+        setOpen(true);
+      }
       setLoading(false);
     }
     getList(value);
@@ -86,34 +90,67 @@ const AutoCompleteWidget = () => {
           display: "flex",
           alignItems: "center",
           gap: "30px",
+          position: "relative",
           flexWrap: { md: "nowrap", xs: "wrap" },
         }}
       >
-        <Autocomplete
-          freeSolo
-          fullWidth
-          onInputChange={(event, newValue) => {
-            setPlaceName(newValue);
-          }}
+        {open && placeData.length !== 0 && (
+          <Box
+            sx={{
+              border: "1px solid #ccc",
+              minHeight: "200px",
+              borderRadius: "10px",
+              width: "82%",
+              maxHeight: "200px",
+              overflow: "auto",
+              backgroundColor: "white",
+              position: "absolute",
+              bottom: "-200px",
+              zIndex: "100",
+              "@media (max-width:900px)": {
+                bottom: "-115px",
+                width: "100%",
+              },
+            }}
+          >
+            {placeData.map((e: any, i) => (
+              <Box
+                sx={{
+                  padding: "20px 10px",
+                  borderBottom: "1px solid black",
+                  "&:hover": {
+                    backgroundColor: "#7B71EB",
+                    color: "white",
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={() => {
+                  setSelected(true);
+                  setPlaceName(`${e.name} ${e?.formatted_address}`);
+                  setOpen(false);
+                }}
+              >
+                <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                  {e.name}
+                </span>{" "}
+                <span style={{ fontSize: "14px" }}>{e?.formatted_address}</span>
+              </Box>
+            ))}
+          </Box>
+        )}
+        <TextField
+          // label="Search input"
           value={placeName}
-          id="google-place-api-id"
-          disableClearable
-          open={open}
-          options={placeData?.map(
-            (option: any) =>
-              `${option?.name} Location: ${option?.formatted_address}`
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              // label="Search input"
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
-            />
-          )}
+          onChange={(e) => {
+            setSelected(false);
+            setPlaceName(e.target.value);
+          }}
+          fullWidth
+          InputProps={{
+            type: "search",
+          }}
         />
+
         <Button
           variant="contained"
           onClick={generateReviewLink}
