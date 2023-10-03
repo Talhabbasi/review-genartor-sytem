@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useDebounce } from "use-debounce";
+import location from "../../assets/images/location.png";
 
 const AutoCompleteWidget = () => {
   const [placeName, setPlaceName] = useState<any>("");
@@ -26,7 +27,7 @@ const AutoCompleteWidget = () => {
       const id: any = placeData.find(
         (e: any) => `${e.description.toLowerCase()}` === placeName.toLowerCase()
       );
-      const url = ` https://review-genartor-sytem.vercel.app/api/get-review`;
+      const url = `https://review-genartor-sytem.vercel.app/api/get-review`;
       const response = await axios.post(`${url}?placeId=${id?.place_id}`);
       setReviewLink(response.data.data);
       setPlaceName("");
@@ -96,7 +97,7 @@ const AutoCompleteWidget = () => {
           <Box
             sx={{
               border: "1px solid #ccc",
-              minHeight: "200px",
+              minHeight: placeData.length > 3 ? "200px" : "100%",
               borderRadius: "10px",
               width: "82%",
               maxHeight: "200px",
@@ -113,12 +114,16 @@ const AutoCompleteWidget = () => {
           >
             {placeData.map((e: any, i) => (
               <Box
+                key={i}
                 sx={{
                   padding: "20px 10px",
                   borderBottom: "1px solid black",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
                   "&:hover": {
                     backgroundColor: "#7B71EB",
-                    color: "white",
+                    color: "black",
                     cursor: "pointer",
                   },
                 }}
@@ -128,6 +133,11 @@ const AutoCompleteWidget = () => {
                   setOpen(false);
                 }}
               >
+                <img
+                  src={location.src}
+                  alt="location"
+                  style={{ maxWidth: "20px" }}
+                />
                 <span style={{ fontSize: "14px" }}>{e.description}</span>{" "}
               </Box>
             ))}
