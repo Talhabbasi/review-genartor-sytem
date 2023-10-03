@@ -22,7 +22,7 @@ const HomeComponent = () => {
           <Box
             sx={{
               position: "absolute",
-              left: "-100px",
+              left: "0x",
               top: "100px",
               display: { xs: "none", lg: "block" },
             }}

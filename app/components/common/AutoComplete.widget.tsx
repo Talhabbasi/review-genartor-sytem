@@ -69,6 +69,8 @@ const AutoCompleteWidget = () => {
         boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.08)",
         padding: { xs: "25px", lg: "25px 40px" },
         pb: "60px",
+        maxWidth: "900px",
+        margin: "auto",
       }}
     >
       <InputLabel
@@ -171,6 +173,10 @@ const AutoCompleteWidget = () => {
             lineHeight: "22px",
             minWidth: "180px",
             padding: "17px",
+            "&.Mui-disabled": {
+              backgroundColor: "#7B71EB",
+              color: "white",
+            },
             borderRadius: "50px",
             border: "1px solid #7B71EB",
             width: { xs: "100%", md: "auto" },
