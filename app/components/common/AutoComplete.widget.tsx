@@ -97,7 +97,7 @@ const AutoCompleteWidget = () => {
           <Box
             sx={{
               border: "1px solid #ccc",
-              minHeight: placeData.length > 3 ? "200px" : "100%",
+              minHeight: "200px",
               borderRadius: "10px",
               width: "82%",
               maxHeight: "200px",
