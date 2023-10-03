@@ -24,10 +24,9 @@ const AutoCompleteWidget = () => {
     setLoading(true);
     if (placeName.length !== 0 && placeData.length !== 0) {
       const id: any = placeData.find(
-        (e: any) =>
-          `${e.description.toLowerCase()}}` === placeName.toLowerCase()
+        (e: any) => `${e.description.toLowerCase()}` === placeName.toLowerCase()
       );
-      const url = `https://review-genartor-sytem.vercel.app/api/get-review`;
+      const url = ` https://review-genartor-sytem.vercel.app/api/get-review`;
       const response = await axios.post(`${url}?placeId=${id?.place_id}`);
       setReviewLink(response.data.data);
       setPlaceName("");
